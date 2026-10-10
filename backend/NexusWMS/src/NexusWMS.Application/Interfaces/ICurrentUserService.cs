@@ -1,0 +1,11 @@
+namespace NexusWMS.Application.Interfaces;
+
+public interface ICurrentUserService
+{
+    Guid? UserId { get; }
+    string? UserName { get; }
+    Guid? TenantId { get; }
+    Guid? WarehouseId { get; }
+    bool IsAuthenticated { get; }
+    bool IsInRole(params string[] roles);
+}

@@ -148,7 +148,7 @@ function UserFormModal({ open, user, onClose }: UserFormModalProps) {
             { type: 'email', message: 'Email không hợp lệ.' },
           ]}
         >
-          <Input placeholder="vd: nguyenvana@wms.local" />
+          <Input placeholder="vd: nguyenvana@nexuswms.local" />
         </Form.Item>
 
         <Form.Item

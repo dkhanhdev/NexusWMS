@@ -1,0 +1,55 @@
+using Microsoft.EntityFrameworkCore;
+using NexusWMS.Application.Interfaces;
+using NexusWMS.Domain.Entities;
+using NexusWMS.Infrastructure.Data;
+
+namespace NexusWMS.Infrastructure.Repositories;
+
+public class SqlStockAdjustmentRepository : IStockAdjustmentRepository
+{
+    private readonly WmsDbContext _db;
+
+    public SqlStockAdjustmentRepository(WmsDbContext db)
+    {
+        _db = db;
+    }
+
+    public async Task<List<StockAdjustment>> GetAllAsync()
+    {
+        return await _db.StockAdjustments
+            .Include(a => a.Details)
+                .ThenInclude(d => d.Product)
+            .Include(a => a.Details)
+                .ThenInclude(d => d.Location)
+                    .ThenInclude(l => l.Warehouse)
+            .OrderByDescending(a => a.CreatedDate)
+            .ToListAsync();
+    }
+
+    public async Task<StockAdjustment?> GetByIdAsync(Guid id)
+    {
+        return await _db.StockAdjustments
+            .Include(a => a.Details)
+                .ThenInclude(d => d.Product)
+            .Include(a => a.Details)
+                .ThenInclude(d => d.Location)
+                    .ThenInclude(l => l.Warehouse)
+            .FirstOrDefaultAsync(a => a.Id == id);
+    }
+
+    public async Task AddAsync(StockAdjustment adjustment)
+    {
+        await _db.StockAdjustments.AddAsync(adjustment);
+    }
+
+    public async Task UpdateAsync(StockAdjustment adjustment)
+    {
+        _db.StockAdjustments.Update(adjustment);
+    }
+
+    public async Task DeleteAsync(StockAdjustment adjustment)
+    {
+        _db.StockAdjustmentDetails.RemoveRange(adjustment.Details);
+        _db.StockAdjustments.Remove(adjustment);
+    }
+}

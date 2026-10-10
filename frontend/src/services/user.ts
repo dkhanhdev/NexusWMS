@@ -1,4 +1,4 @@
-// Service trang Thông tin cá nhân — gọi API thật từ backend WMS.API
+// Service trang Thông tin cá nhân — gọi API thật từ backend NexusWMS.API
 import api from '../lib/axios'
 import type { PagedResponse } from '../types/pagination'
 import type {

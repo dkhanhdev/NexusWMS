@@ -1,0 +1,12 @@
+using NexusWMS.Application.DTOs;
+
+namespace NexusWMS.Application.Interfaces;
+
+public interface IShipmentService
+{
+    Task<List<ShipmentDto>> GetAllAsync();
+    Task<ShipmentDto?> GetByIdAsync(Guid id);
+    Task<ShipmentDto?> GetBySaleOrderAsync(Guid saleOrderId);
+    Task<ShipmentDto> CreateAsync(CreateShipmentDto dto);
+    Task<ShipmentDto?> MarkShippedAsync(Guid id);
+}

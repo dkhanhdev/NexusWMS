@@ -1,5 +1,5 @@
 # ============================================================
-#  WMS — Khởi động backend (.NET) + frontend (Vite)
+#  Nexus WMS — Khởi động backend (.NET) + frontend (Vite)
 #
 #  Cách dùng:
 #    .\start-dev.ps1
@@ -11,10 +11,17 @@
 $ErrorActionPreference = 'Stop'
 
 $root        = $PSScriptRoot
-$backendDir  = Join-Path $root 'backend\WMS-mini'
+$backendDir  = Join-Path $root 'backend\NexusWMS'
 $frontendDir = Join-Path $root 'frontend'
 
 # ---- Kiểm tra công cụ -------------------------------------------------------
+if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
+    $userDotnet = Join-Path $env:USERPROFILE '.dotnet'
+    if (Test-Path (Join-Path $userDotnet 'dotnet.exe')) {
+        $env:PATH = "$userDotnet;$env:PATH"
+    }
+}
+
 if (-not (Get-Command dotnet -ErrorAction SilentlyContinue)) {
     Write-Host '[LOI] Khong tim thay "dotnet". Hay cai .NET 8 SDK roi thu lai.' -ForegroundColor Red
     exit 1
@@ -60,18 +67,19 @@ if (Test-Path $envFile) {
     }
 }
 
-$backendCmd = "`$Host.UI.RawUI.WindowTitle = 'WMS - Backend'; Set-Location -LiteralPath '$backendDir'; $envAssignments`$env:ASPNETCORE_ENVIRONMENT = 'Development'; `$env:ASPNETCORE_URLS = 'http://localhost:5246'; dotnet run --project .\src\WMS.API"
+$userDotnetDir = Join-Path $env:USERPROFILE '.dotnet'
+$backendCmd = "`$Host.UI.RawUI.WindowTitle = 'Nexus WMS - Backend'; if (Test-Path '$userDotnetDir') { `$env:PATH = '$userDotnetDir;' + `$env:PATH }; Set-Location -LiteralPath '$backendDir'; $envAssignments`$env:ASPNETCORE_ENVIRONMENT = 'Development'; `$env:ASPNETCORE_URLS = 'http://localhost:5246'; dotnet run --project .\src\NexusWMS.API"
 Start-DevWindow $backendCmd $backendDir
 
 # ---- Khởi động frontend (http://localhost:5173) -----------------------------
 Write-Host '[2/2] Dang khoi dong frontend (npm run dev)...' -ForegroundColor Cyan
-$frontendCmd = "`$Host.UI.RawUI.WindowTitle = 'WMS - Frontend'; Set-Location -LiteralPath '$frontendDir'; npm run dev"
+$frontendCmd = "`$Host.UI.RawUI.WindowTitle = 'Nexus WMS - Frontend'; Set-Location -LiteralPath '$frontendDir'; npm run dev"
 Start-DevWindow $frontendCmd $frontendDir
 
 # ---- Thông tin truy cập -----------------------------------------------------
 Write-Host ''
 Write-Host '======================================================' -ForegroundColor Green
-Write-Host '  WMS da duoc khoi dong:'                                -ForegroundColor Green
+Write-Host '  Nexus WMS da duoc khoi dong:'                          -ForegroundColor Green
 Write-Host '    Frontend : http://localhost:5173'                    -ForegroundColor Green
 Write-Host '    Backend  : http://localhost:5246'                    -ForegroundColor Green
 Write-Host '    Swagger  : http://localhost:5246/swagger'            -ForegroundColor Green

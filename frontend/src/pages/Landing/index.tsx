@@ -662,7 +662,7 @@ export default function LandingPage() {
           }}
         >
           <Logo size={28} withWordmark wordmarkColor="#FFFFFF" />
-          <div>© {new Date().getFullYear()} WMS B2B SaaS Platform. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} Nexus WMS B2B SaaS Platform. All rights reserved.</div>
           <div style={{ display: 'flex', gap: 20 }}>
             <span style={{ cursor: 'pointer' }} onClick={() => navigate('/login')}>
               Đăng nhập

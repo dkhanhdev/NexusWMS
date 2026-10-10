@@ -4,31 +4,41 @@ interface LogoProps {
   wordmarkColor?: string
 }
 
-// Logo WMS: tile Ant Blue bo góc 8px, glyph trắng 3 thanh dọc tạo chữ W
-// (ý tưởng kệ kho / xếp kiện). Dùng ở BrandPanel, Sider, LoginForm, favicon.
+// Logo Nexus WMS: tile Ant Blue gradient bo góc 8px, glyph chữ N cách điệu hiện đại (kết nối mạng lưới kho bãi Nexus).
 function Logo({
   size = 32,
   withWordmark = false,
   wordmarkColor = '#fff',
 }: LogoProps) {
+  const isDarkText = wordmarkColor !== '#fff' && wordmarkColor !== '#ffffff'
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
       <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="#1677FF" />
-        <rect x="8" y="9" width="4" height="13" rx="2" fill="#fff" />
-        <rect x="14" y="14" width="4" height="8" rx="2" fill="#fff" />
-        <rect x="20" y="9" width="4" height="13" rx="2" fill="#fff" />
+        <defs>
+          <linearGradient id="nexusGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#1677FF" />
+            <stop offset="1" stopColor="#0958D9" />
+          </linearGradient>
+        </defs>
+        <rect width="32" height="32" rx="8" fill="url(#nexusGrad)" />
+        {/* Geometric connected letter N */}
+        <path
+          d="M8.5 23V9h3.6l7.4 9.6V9h4v14h-3.6L12.5 13.4V23h-4z"
+          fill="#ffffff"
+        />
       </svg>
       {withWordmark && (
         <span
           style={{
             color: wordmarkColor,
-            fontSize: size * 0.56,
-            fontWeight: 600,
+            fontSize: size * 0.52,
+            fontWeight: 700,
             letterSpacing: 0.5,
+            whiteSpace: 'nowrap',
           }}
         >
-          WMS
+          Nexus <span style={{ color: isDarkText ? '#1677FF' : '#69b1ff' }}>WMS</span>
         </span>
       )}
     </div>

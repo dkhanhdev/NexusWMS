@@ -1,0 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+using NexusWMS.Domain.Common;
+
+namespace NexusWMS.Domain.Entities;
+
+public class PurchaseOrderDetail : BaseAuditableEntity
+{
+    public Guid PurchaseOrderId { get; set; }
+
+    [Required]
+    public PurchaseOrder PurchaseOrder { get; set; } = null!;
+
+    public Guid ProductId { get; set; }
+
+    [Required]
+    public Product Product { get; set; } = null!;
+
+    public int OrderedQuantity { get; set; }
+    public int ReceivedQuantity { get; set; }
+    public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+}

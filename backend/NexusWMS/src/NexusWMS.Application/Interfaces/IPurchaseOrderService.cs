@@ -1,0 +1,16 @@
+using NexusWMS.Application.DTOs;
+using NexusWMS.Domain.Entities;
+
+namespace NexusWMS.Application.Interfaces;
+
+public interface IPurchaseOrderService
+{
+    Task<List<PurchaseOrderDto>> GetAllAsync();
+    Task<PagedResult<PurchaseOrderDto>> GetPagedAsync(PurchaseOrderListQuery query, int pageSize, CancellationToken cancellationToken = default);
+    Task<PurchaseOrderDto?> GetByIdAsync(Guid id);
+    Task<PurchaseOrderDto> CreateAsync(CreatePurchaseOrderDto dto);
+    Task<PurchaseOrderDto?> UpdateAsync(Guid id, UpdatePurchaseOrderDto dto);
+    Task<bool> DeleteAsync(Guid id);
+    Task<PurchaseOrderDto?> ApproveAsync(Guid id);
+    Task<PurchaseOrderDto?> CloseAsync(Guid id);
+}

@@ -1,6 +1,6 @@
 # Kịch bản kiểm thử guard — Inbound, Outbound và CRUD bằng cURL
 
-> **Mục đích:** đây là kiểm thử end-to-end thủ công có thể lặp lại cho các luồng quan trọng nhất của WMS. Kịch bản gọi API thật bằng `curl.exe` từ PowerShell, kiểm tra dữ liệu trả về và các bất biến nghiệp vụ. Không tạo project test, không tạo source test, không dùng test runner.
+> **Mục đích:** đây là kiểm thử end-to-end thủ công có thể lặp lại cho các luồng quan trọng nhất của Nexus WMS. Kịch bản gọi API thật bằng `curl.exe` từ PowerShell, kiểm tra dữ liệu trả về và các bất biến nghiệp vụ. Không tạo project test, không tạo source test, không dùng test runner.
 >
 > **Phạm vi guard:** Purchase Order, Receiving, Put-away, Stock/Location, Sale Order, Picking, Shipment; cùng các CRUD có API tương ứng và ảnh hưởng trực tiếp đến inbound/outbound.
 

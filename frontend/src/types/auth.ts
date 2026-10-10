@@ -1,5 +1,4 @@
-// Các type dùng cho auth, tên field khớp DTO phía backend
-// (backend/WMS-mini/src/WMS.Application/DTOs: LoginDto, RegisterDto, AuthResponseDto)
+// (backend/NexusWMS/src/NexusWMS.Application/DTOs: LoginDto, RegisterDto, AuthResponseDto)
 
 export interface LoginDto {
   username: string

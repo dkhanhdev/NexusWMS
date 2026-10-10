@@ -75,3 +75,65 @@ export const PURCHASE_ORDER_STATUS_COLOR: Record<PurchaseOrderStatus, string> = 
   Received: 'blue',
   Closed: 'default',
 }
+
+export const RMA_STATUS_LABEL: Record<string, string> = {
+  Requested: 'Chờ duyệt',
+  '0': 'Chờ duyệt',
+  Approved: 'Đã duyệt',
+  '1': 'Đã duyệt',
+  Received: 'Đã nhận hàng',
+  '2': 'Đã nhận hàng',
+  Inspected: 'Đã kiểm tra',
+  '3': 'Đã kiểm tra',
+  Completed: 'Hoàn thành',
+  '4': 'Hoàn thành',
+}
+
+export const RMA_STATUS_COLOR: Record<string, string> = {
+  Requested: 'orange',
+  '0': 'orange',
+  Approved: 'blue',
+  '1': 'blue',
+  Received: 'cyan',
+  '2': 'cyan',
+  Inspected: 'purple',
+  '3': 'purple',
+  Completed: 'green',
+  '4': 'green',
+}
+
+export const PRODUCT_CONDITION_LABEL: Record<string, string> = {
+  Ok: 'Nguyên vẹn',
+  '0': 'Nguyên vẹn',
+  Damaged: 'Hư hỏng',
+  '1': 'Hư hỏng',
+  Missing: 'Thiếu hàng',
+  '2': 'Thiếu hàng',
+}
+
+export const PRODUCT_CONDITION_COLOR: Record<string, string> = {
+  Ok: 'green',
+  '0': 'green',
+  Damaged: 'red',
+  '1': 'red',
+  Missing: 'orange',
+  '2': 'orange',
+}
+
+export const DISPOSITION_LABEL: Record<string, string> = {
+  Restock: 'Nhập lại kho',
+  '0': 'Nhập lại kho',
+  Repair: 'Sửa chữa',
+  '1': 'Sửa chữa',
+  Dispose: 'Tiêu hủy',
+  '2': 'Tiêu hủy',
+}
+
+export const DISPOSITION_COLOR: Record<string, string> = {
+  Restock: 'green',
+  '0': 'green',
+  Repair: 'orange',
+  '1': 'orange',
+  Dispose: 'red',
+  '2': 'red',
+}

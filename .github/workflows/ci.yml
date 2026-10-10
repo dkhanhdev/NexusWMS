@@ -1,4 +1,4 @@
-# CI — build + test + lint cho WMS
+# CI — build + test + lint cho Nexus WMS
 #
 # Chạy backend (build + test) và frontend (lint + build) trên mỗi push/PR tới nhánh chính.
 # Không cần secret: chỉ dùng config mẫu, không khởi động DB thật.
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend/WMS-mini
+        working-directory: backend/NexusWMS
     steps:
       - uses: actions/checkout@v4
 
@@ -27,14 +27,14 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Restore
-        run: dotnet restore WMS.sln
+        run: dotnet restore NexusWMS.sln
 
       # -m:1 (single MSBuild node) để tránh lỗi tương tranh node trên một số runner.
       - name: Build
-        run: dotnet build WMS.sln --no-restore -m:1
+        run: dotnet build NexusWMS.sln --no-restore -m:1
 
       - name: Test
-        run: dotnet test WMS.sln --no-build -m:1
+        run: dotnet test NexusWMS.sln --no-build -m:1
 
   frontend:
     name: Frontend (lint + test + build)

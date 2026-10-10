@@ -1,6 +1,6 @@
-# Hướng dẫn Set up Docker cho WMS
+# Hướng dẫn Set up Docker cho Nexus WMS
 
-Tài liệu hướng dẫn chạy toàn bộ hệ thống WMS bằng **Docker Compose** trên máy bất kỳ (Windows / macOS / Linux / VPS) — không cần cài .NET SDK, Node.js hay SQL Server thủ công.
+Tài liệu hướng dẫn chạy toàn bộ hệ thống Nexus WMS bằng **Docker Compose** trên máy bất kỳ (Windows / macOS / Linux / VPS) — không cần cài .NET SDK, Node.js hay SQL Server thủ công.
 
 Đối chiếu ticket: [`docs/issues/09-docker-compose-deploy.md`](docs/issues/09-docker-compose-deploy.md) (status: ready-for-agent).
 
@@ -17,7 +17,7 @@ Tài liệu hướng dẫn chạy toàn bộ hệ thống WMS bằng **Docker Co
            │ /api/*
 ┌──────────▼─────────────────┐
 │  api (ASP.NET Core 8)      │  ← http://api:8080
-│  - WMS.API (JWT, Swagger)  │
+│  - NexusWMS.API (JWT, Swagger)  │
 │  - seed roles + admin      │
 └──────────┬─────────────────┘
            │ SQL Server
@@ -77,12 +77,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy solution + projects (tận dụng layer cache cho restore)
-COPY WMS-mini/WMS.sln ./
-COPY WMS-mini/src/ ./src/
-RUN dotnet restore WMS.sln
+COPY NexusWMS/NexusWMS.sln ./
+COPY NexusWMS/src/ ./src/
+RUN dotnet restore NexusWMS.sln
 
 # Publish API (Release)
-RUN dotnet publish WMS-mini/src/WMS.API/WMS.API.csproj \
+RUN dotnet publish NexusWMS/src/NexusWMS.API/NexusWMS.API.csproj \
     -c Release -o /app/publish --no-restore
 
 # ── Runtime stage ──────────────────────────────────────────
@@ -94,10 +94,10 @@ COPY --from=build /app/publish .
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "WMS.API.dll"]
+ENTRYPOINT ["dotnet", "NexusWMS.API.dll"]
 ```
 
-> **Lưu ý về build context**: file này nằm trong `backend/` và `docker-compose.yml` sẽ khai báo `context: ./backend`, nên mọi đường dẫn trong Dockerfile tính từ thư mục `backend/` (ví dụ `WMS-mini/WMS.sln`).
+> **Lưu ý về build context**: file này nằm trong `backend/` và `docker-compose.yml` sẽ khai báo `context: ./backend`, nên mọi đường dẫn trong Dockerfile tính từ thư mục `backend/` (ví dụ `NexusWMS/NexusWMS.sln`).
 
 ### 4.2 `backend/.dockerignore`
 
@@ -187,7 +187,7 @@ server {
 ### 4.6 `docker-compose.yml` (repo root)
 
 ```yaml
-name: wms
+name: nexus-wms
 
 services:
   # ── SQL Server 2022 ──────────────────────────────────────
@@ -217,13 +217,13 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       # ⚠️ Bắt buộc: Program.cs ném exception nếu thiếu Jwt/Cloudinary
       Jwt__Key: ${JWT_KEY}
-      Jwt__Issuer: ${JWT_ISSUER:-WMS}
-      Jwt__Audience: ${JWT_AUDIENCE:-WMS}
+      Jwt__Issuer: ${JWT_ISSUER:-NexusWMS}
+      Jwt__Audience: ${JWT_AUDIENCE:-NexusWMS}
       Cloudinary__CloudName: ${CLOUDINARY_CLOUD_NAME}
       Cloudinary__ApiKey: ${CLOUDINARY_API_KEY}
       Cloudinary__ApiSecret: ${CLOUDINARY_API_SECRET}
       # ⚠️ Trỏ tới container db, KHÔNG phải localdb
-      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=WMS;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__DefaultConnection: "Server=db,1433;Database=NexusWMS;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;"
     depends_on:
       db:
         condition: service_healthy
@@ -277,7 +277,7 @@ CLOUDINARY_API_SECRET=qwO39FuNCpapJj8qcIX48AzVCP4
 
 ### Cách A — Khuyến nghị: thêm auto-migrate vào `Program.cs` (đổi ~5 dòng)
 
-Trong `backend/WMS-mini/src/WMS.API/Program.cs`, ngay **trước** khối seed (trước dòng `// Seed roles and default admin`), thêm:
+Trong `backend/NexusWMS/src/NexusWMS.API/Program.cs`, ngay **trước** khối seed (trước dòng `// Seed roles and default admin`), thêm:
 
 ```csharp
 using (var scope = app.Services.CreateScope())
@@ -297,10 +297,10 @@ Chạy migration **sau khi `db` healthy, trước khi `api` start lần đầu**
 # Từ thư mục repo root, khi db đã chạy:
 dotnet tool install --global dotnet-ef
 export PATH="$PATH:$HOME/.dotnet/tools"        # PowerShell: $env:PATH += ";$env:USERPROFILE\.dotnet\tools"
-cd backend/WMS-mini
+cd backend/NexusWMS
 dotnet ef database update \
-  --project src/WMS.API/WMS.API.csproj \
-  --connection "Server=localhost,1433;Database=WMS;User Id=sa;Password=Wms@12345!;TrustServerCertificate=True;"
+  --project src/NexusWMS.API/NexusWMS.API.csproj \
+  --connection "Server=localhost,1433;Database=NexusWMS;User Id=sa;Password=Wms@12345!;TrustServerCertificate=True;"
 ```
 
 Sau đó `docker compose up -d --build` bình thường (lần sau không cần migrate lại nếu đã có `__EFMigrationsHistory`).

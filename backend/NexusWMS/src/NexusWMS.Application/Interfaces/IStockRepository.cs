@@ -1,0 +1,18 @@
+using NexusWMS.Application.DTOs;
+using NexusWMS.Domain.Entities;
+
+namespace NexusWMS.Application.Interfaces;
+
+public interface IStockRepository
+{
+    Task<List<Stock>> GetAllAsync();
+    Task<PagedResult<StockSummaryDto>> GetSummaryPagedAsync(StockSummaryQuery query, int pageSize, CancellationToken cancellationToken = default);
+    Task<Stock?> GetByIdAsync(Guid id);
+    Task<List<Stock>> GetByProductAsync(Guid productId);
+    Task<List<Stock>> GetAvailableByProductAndWarehouseAsync(Guid productId, Guid warehouseId);
+    Task<Stock?> GetByProductAndLocationAsync(Guid productId, Guid locationId, string? lotNumber = null, DateTime? expiryDate = null);
+    Task<List<Stock>> GetByLocationAsync(Guid locationId);
+    Task AddAsync(Stock stock);
+    Task UpdateAsync(Stock stock);
+    Task DeleteAsync(Stock stock);
+}

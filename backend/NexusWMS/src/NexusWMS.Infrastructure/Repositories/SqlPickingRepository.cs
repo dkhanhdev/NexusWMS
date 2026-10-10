@@ -1,0 +1,70 @@
+using Microsoft.EntityFrameworkCore;
+using NexusWMS.Application.Interfaces;
+using NexusWMS.Domain.Entities;
+using NexusWMS.Domain.Enums;
+using NexusWMS.Infrastructure.Data;
+
+namespace NexusWMS.Infrastructure.Repositories;
+
+public class SqlPickingRepository : IPickingRepository
+{
+    private readonly WmsDbContext _db;
+
+    public SqlPickingRepository(WmsDbContext db)
+    {
+        _db = db;
+    }
+
+    public async Task<List<Picking>> GetAllAsync(Guid? assignToId = null)
+    {
+        IQueryable<Picking> pickings = _db.Pickings
+            .Include(p => p.Warehouse)
+            .Include(p => p.AssignedTo)
+            .Include(p => p.PickingDetails)
+                .ThenInclude(d => d.Product)
+            .Include(p => p.PickingDetails)
+                .ThenInclude(d => d.Location)
+            .AsNoTracking();
+
+        if (assignToId.HasValue)
+            pickings = pickings.Where(p => p.AssignedToId == assignToId.Value);
+
+        return await pickings.OrderByDescending(p => p.CreatedDate).ToListAsync();
+    }
+
+    public async Task<Picking?> GetByIdAsync(Guid id)
+    {
+        return await _db.Pickings
+            .Include(p => p.Warehouse)
+            .Include(p => p.AssignedTo)
+            .Include(p => p.PickingDetails)
+                .ThenInclude(d => d.Product)
+            .Include(p => p.PickingDetails)
+                .ThenInclude(d => d.Location)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task AddAsync(Picking picking)
+    {
+        await _db.Pickings.AddAsync(picking);
+    }
+
+    public async Task UpdateAsync(Picking picking)
+    {
+        _db.Pickings.Update(picking);
+    }
+
+    public async Task DeleteAsync(Picking picking)
+    {
+        if (picking.PickingDetails != null && picking.PickingDetails.Any())
+        {
+            _db.PickingDetails.RemoveRange(picking.PickingDetails);
+        }
+        _db.Pickings.Remove(picking);
+    }
+
+    public async Task<List<Guid>> GetPickingIdsExceptAsync(Guid excludeId)
+    {
+        return await _db.Pickings.Where(p => p.Id != excludeId).Select(p => p.Id).ToListAsync();
+    }
+}

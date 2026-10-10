@@ -68,7 +68,7 @@ export function AppFooter() {
             </li>
             <li>
               <MailOutlined style={{ marginRight: 8 }} />
-              hotro@wms.vn
+              hotro@nexuswms.vn
             </li>
           </ul>
         </div>

@@ -2,6 +2,8 @@ export interface ShipmentDto {
   id: string
   saleOrderId: string
   saleOrderNo?: string
+  customerName?: string
+  warehouseName?: string
   carrier?: string
   trackingNo?: string
   shippedDate?: string
